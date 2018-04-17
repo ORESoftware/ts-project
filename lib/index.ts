@@ -19,7 +19,7 @@ import {cliOptions} from "./cli-options";
 import chalk from "chalk";
 const opts = dashdash.parse({options: cliOptions});
 const isForce = Boolean(opts.force);
-const isYes = opts.yes || '';
+const isYes = Boolean(opts.yes || '');
 const name = String(opts.name || opts._args[0]).trim();
 
 if (!name) {
@@ -37,6 +37,7 @@ async.autoInject({
     confirm: function (cb: AsyncAutoTaskFunction<any, any, any>) {
       
       if (isForce || isYes) {
+        log.info('No confirmation needed.');
         return process.nextTick(cb);
       }
       
@@ -188,7 +189,7 @@ async.autoInject({
     
     log.info('');
     log.info(chalk.green.bold('Success.'));
-    log.info(chalk.bold(`You need to add a remote with 'git remote add..."`));
+    log.info(chalk.bold(`You need to add a remote with "git remote add..."`));
     log.info(chalk.blue.bold(`pwd:`), chalk.blue(`${process.cwd()}`));
     log.info(chalk.blue.bold(`Go to your project:`), chalk.blue(`cd ${proj}`));
     log.info('');

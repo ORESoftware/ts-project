@@ -36,7 +36,7 @@ export const cliOptions = [
     names: ['yes', 'y'],
     type: 'bool',
     help: 'Say yes to everything.',
-    default: 'no'
+    default: false
   },
   
 
