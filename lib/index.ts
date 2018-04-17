@@ -19,17 +19,19 @@ import chalk from "chalk";
 const opts = dashdash.parse({options: cliOptions});
 const isForce = Boolean(opts.force || false);
 const isYes = Boolean(opts.yes || false);
-const name = String(opts.name || opts._args[0]).trim();
+const pth = String(opts.name || opts._args[0]).trim();
 
-if (!name) {
+if (!pth) {
   throw new Error('No project name provided at command line.');
 }
+
+const proj = path.resolve(process.cwd() + '/' + pth);
+const projRoot = path.dirname(proj);
+const name = path.basename(proj);
 
 if (!/^[a-z0-9_-]+$/i.test(name)) {
   throw new Error('Project name must be alphanumeric (hyphen or underscore is OK too).');
 }
-
-const proj = path.resolve(process.cwd() + '/' + name);
 
 async.autoInject({
     
@@ -61,31 +63,50 @@ async.autoInject({
       
     },
     
-    removeGitRemote: function (clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
-      
-      log.info('Removing git remote.');
-      const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`git remote rm origin;\n`);
+    mkdirp: function (confirm: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+      log.info('Creating directory, with make derp.');
+      const k = cp.spawn('bash');
+      k.stdin.end(`mkdir -p ${projRoot};\n`);
+      k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
-          cb(new Error(`Could not clone project to directory ${proj}`), null);
+          cb(new Error(`The following command failed: "mkdir -p ${projRoot}"`), null);
         }
         else {
+          log.info('Successfully made derp.');
           cb(null, null);
         }
       });
     },
     
-    clone: function (confirm: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    clone: function (confirm: any, mkdirp: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       log.info('Cloning repo.');
-      const k = cp.spawn('bash');
+      const k = cp.spawn('bash', [], {cwd: projRoot});
       k.stdin.end(`git clone --depth=5 --branch=master https://github.com/ORESoftware/typescript-library-skeleton.git ${name};\n`);
       k.once('exit', function (code) {
         if (code > 0) {
           cb(new Error(`Could not clone project to directory ${proj}`), null);
         }
         else {
+          log.info('Git clone succeeded.');
+          cb(null, null);
+        }
+      });
+    },
+    
+    removeGitRemote: function (clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+      
+      log.info('Removing git remote.');
+      const k = cp.spawn('bash', [], {cwd: proj});
+      k.stdin.end(`git remote rm origin;\n`);
+      k.stderr.pipe(process.stderr);
+      k.once('exit', function (code) {
+        if (code > 0) {
+          cb(new Error(`The following command failed: 'git remote rm origin', for this repo: ${proj}`), null);
+        }
+        else {
+          log.info('Successfully removed git remote.');
           cb(null, null);
         }
       });
@@ -122,7 +143,6 @@ async.autoInject({
           `xargs sed -i s/typescript-library-skeleton/${name}/g`
       };
       
-      
       const k = cp.spawn('bash', [], {cwd: proj});
       k.stdin.end(`find . -type f -not -path '*/.git/*' | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
@@ -141,15 +161,15 @@ async.autoInject({
     replaceOrgName: function (clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       // find . -type f | xargs sed -i s^<oldstring>^<newstring>^g
-  
+      
       log.info('Replacing org name with temp org name.');
-  
+      
       const getXargsCommand = function () {
         return String(os.platform()).toUpperCase() === 'DARWIN' ?
           `xargs sed -i '' s/ORESoftware/your-org/g` :
           `xargs sed -i s/ORESoftware/your-org/g`
       };
-  
+      
       const k = cp.spawn('bash', [], {cwd: proj});
       k.stdin.end(`find . -type f -not -path '*/.git/*' | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
