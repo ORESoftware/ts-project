@@ -5,6 +5,7 @@
 import path = require('path');
 import cp = require('child_process');
 import readline = require('readline');
+import os = require('os');
 
 
 //npm
@@ -79,7 +80,7 @@ async.autoInject({
       
       log.info('Cloning repo.');
       const k = cp.spawn('bash');
-      k.stdin.end(`git clone https://github.com/ORESoftware/typescript-library-skeleton.git ${name};\n`);
+      k.stdin.end(`git clone --depth=5 --branch=master https://github.com/ORESoftware/typescript-library-skeleton.git ${name};\n`);
       k.once('exit', function (code) {
         if (code > 0) {
           cb(new Error(`Could not clone project to directory ${proj}`), null);
@@ -115,8 +116,15 @@ async.autoInject({
       
       log.info('Replacing temp library name with your library name.');
       
+      const getXargsCommand = function () {
+        return String(os.platform()).toUpperCase() === 'DARWIN' ?
+          `xargs sed -i '' s/typescript-library-skeleton/${name}/g` :
+          `xargs sed -i s/typescript-library-skeleton/${name}/g`
+      };
+      
+      
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`find . -type f -not -path '*/.git/*' | xargs sed -i '' s/typescript-library-skeleton/${name}/g;\n`);
+      k.stdin.end(`find . -type f -not -path '*/.git/*' | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
@@ -136,8 +144,14 @@ async.autoInject({
   
       log.info('Replacing org name with temp org name.');
   
+      const getXargsCommand = function () {
+        return String(os.platform()).toUpperCase() === 'DARWIN' ?
+          `xargs sed -i '' s/ORESoftware/your-org/g` :
+          `xargs sed -i s/ORESoftware/your-org/g`
+      };
+  
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`find . -type f -not -path '*/.git/*' | xargs sed -i '' s/ORESoftware/your-org/g;\n`);
+      k.stdin.end(`find . -type f -not -path '*/.git/*' | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
