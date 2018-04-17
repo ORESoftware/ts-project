@@ -7,7 +7,6 @@ import cp = require('child_process');
 import readline = require('readline');
 import os = require('os');
 
-
 //npm
 import async = require('async');
 import {AsyncAutoTaskFunction} from "async";
@@ -18,8 +17,8 @@ import {log} from './logger';
 import {cliOptions} from "./cli-options";
 import chalk from "chalk";
 const opts = dashdash.parse({options: cliOptions});
-const isForce = Boolean(opts.force);
-const isYes = Boolean(opts.yes || '');
+const isForce = Boolean(opts.force || false);
+const isYes = Boolean(opts.yes || false);
 const name = String(opts.name || opts._args[0]).trim();
 
 if (!name) {

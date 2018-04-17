@@ -5,4 +5,4 @@ set -e;
 npm link;
 cd "$HOME";
 rm -rf "$HOME/xxx"
-ts_project xxx
+ts_project xxx --yes
