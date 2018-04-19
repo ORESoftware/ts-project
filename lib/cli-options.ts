@@ -19,7 +19,7 @@ export const cliOptions = [
   },
   
   {
-    names: ['name'],
+    names: ['name', 'path'],
     type: 'string',
     help: 'Name of the project (and residing directory).',
     default: ''
@@ -28,7 +28,7 @@ export const cliOptions = [
   {
     names: ['force', 'f'],
     type: 'bool',
-    help: 'Force everything.',
+    help: 'Force everything (and say yes to everything).',
     default: false
   },
   
