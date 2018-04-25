@@ -19,7 +19,7 @@ import chalk from "chalk";
 const opts = dashdash.parse({options: cliOptions});
 const isForce = Boolean(opts.force || false);
 const isYes = Boolean(opts.yes || false);
-const pth = String(opts.name || opts._args[0]).trim();
+const pth = String(opts.name || opts._args[0] || '').trim();
 
 if (!pth) {
   throw new Error('No project name provided at command line.');
