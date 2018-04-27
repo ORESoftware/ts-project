@@ -95,11 +95,12 @@ async.autoInject({
       });
     },
     
-    removeGitRemote: function (clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    removeGit: function (clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       log.info('Removing git remote.');
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`git remote rm origin;\n`);
+      k.stdin.end(`rm -rf .git;\n`);
+      // k.stdin.end(`git remote rm origin;\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
@@ -161,7 +162,6 @@ async.autoInject({
     replaceOrgName: function (clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       // find . -type f | xargs sed -i s^<oldstring>^<newstring>^g
-      
       log.info('Replacing org name with temp org name.');
       
       const getXargsCommand = function () {
@@ -187,7 +187,8 @@ async.autoInject({
     
     chmod: function (clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end('chmod u+x scripts/travis/*;\n');
+      // k.stdin.end('chmod u+x $(find scripts -name "*.sh");\n');
+      k.stdin.end(`find scripts -name "*.sh" | xargs chmod u+x; \n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
