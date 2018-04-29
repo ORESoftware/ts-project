@@ -95,7 +95,7 @@ async.autoInject({
       });
     },
     
-    removeGit: function (clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    removeGit: function (confirm: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       log.info('Removing git remote.');
       const k = cp.spawn('bash', [], {cwd: proj});
@@ -113,7 +113,7 @@ async.autoInject({
       });
     },
     
-    install: function (replaceWithName: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    install: function (confirm: any, replaceWithName: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       log.info('Installing NPM deps...');
       
@@ -159,7 +159,7 @@ async.autoInject({
       
     },
     
-    replaceOrgName: function (clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    replaceOrgName: function (confirm: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       // find . -type f | xargs sed -i s^<oldstring>^<newstring>^g
       log.info('Replacing org name with temp org name.');
@@ -185,10 +185,10 @@ async.autoInject({
       
     },
     
-    chmod: function (clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    chmod: function (confirm: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       const k = cp.spawn('bash', [], {cwd: proj});
       // k.stdin.end('chmod u+x $(find scripts -name "*.sh");\n');
-      k.stdin.end(`find scripts -name "*.sh" | xargs chmod u+x; \n`);
+      k.stdin.end(`set -e; find scripts -name "*.sh" | xargs chmod u+x; \n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
