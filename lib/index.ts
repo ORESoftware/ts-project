@@ -29,8 +29,8 @@ const proj = path.resolve(process.cwd() + '/' + pth);
 const projRoot = path.dirname(proj);
 const name = path.basename(proj);
 
-if (!/^[a-z0-9_-]+$/i.test(name)) {
-  throw new Error('Project name must be alphanumeric (hyphen or underscore is OK too).');
+if (!/^[.a-z0-9_-]+$/i.test(name)) {
+  throw new Error('Project name must be alphanumeric (hyphen, underscore and period, is OK too).');
 }
 
 async.autoInject({
