@@ -11,6 +11,7 @@ import os = require('os');
 import async = require('async');
 import {AsyncAutoTaskFunction} from "async";
 const dashdash = require('dashdash');
+import {getCleanTrace} from 'clean-trace';
 
 //project
 import {log} from './logger';
@@ -32,6 +33,8 @@ const name = path.basename(proj);
 if (!/^[.a-z0-9_-]+$/i.test(name)) {
   throw new Error(chalk.magenta('Project name must be alphanumeric (hyphen, underscore and period, is OK too).'));
 }
+
+const findIgnore = ` -not -path '**/.git/objects/**' -not -path '**/.git/**' -not -path '**/node_modules/**' `;
 
 async.autoInject({
     
@@ -145,7 +148,7 @@ async.autoInject({
       };
       
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`set -e; find . -type f -not -path '**/.git/**' -not -path '**/node_modules/**' | ${getXargsCommand()};\n`);
+      k.stdin.end(`set -e; find . -type f ${findIgnore} | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
@@ -171,7 +174,7 @@ async.autoInject({
       };
       
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`set -e; find . -type f -not -path '**/node_modules/**' -not -path '**/.git/**' | ${getXargsCommand()};\n`);
+      k.stdin.end(`set -e; find . -type f ${findIgnore} | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
@@ -204,7 +207,7 @@ async.autoInject({
   
   function (err, results) {
     
-    if (err) throw err;
+    if (err) throw getCleanTrace(err);
     
     log.info('');
     log.info(chalk.green.bold('Success.'));

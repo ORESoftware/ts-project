@@ -32,6 +32,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "chalk": "^2.4.0",
+    "clean-trace": "0.0.101",
     "dashdash": "^1.14.1"
   },
   "devDependencies": {
