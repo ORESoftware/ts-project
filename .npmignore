@@ -3,7 +3,17 @@ scripts
 test
 .idea
 .vscode
+lib
+
+### files
+.gitignore
+.npmignore
+
+
+### matching
+*.tgz
 *.log
+*.yml
 *.md
 *.json
 *.DS_Store

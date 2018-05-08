@@ -3,13 +3,13 @@
   "version": "0.0.103",
   "description": "Semver-oriented TypeScript library skeleton.",
   "bin": {
-    "tsproject": "lib/index.js",
-    "ts-project": "lib/index.js",
-    "ts_project": "lib/index.js"
+    "tsproject": "dist/index.js",
+    "ts-project": "dist/index.js",
+    "ts_project": "dist/index.js"
   },
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "typings": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "test": "suman test"
   },

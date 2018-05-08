@@ -53,12 +53,12 @@ async.autoInject({
         rl.close();
         const y = String(answer).trim().toUpperCase();
         if (['JEAH', 'YES', 'YASS', 'YEP', 'Y'].includes(y)) {
-          cb(null, null);
+          return cb(null, null);
         }
-        else {
-          log.error('Next time you need to confirm with an affirmative.');
-          process.exit(1);
-        }
+        
+        log.error('Next time you need to confirm with an affirmative.');
+        process.exit(1);
+        
       });
       
     },
@@ -70,12 +70,12 @@ async.autoInject({
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
-          cb(new Error(`The following command failed: "mkdir -p ${projRoot}"`), null);
+          return cb(new Error(`The following command failed: "mkdir -p ${projRoot}"`), null);
         }
-        else {
-          log.info('Successfully made derp.');
-          cb(null, null);
-        }
+        
+        log.info('Successfully made derp.');
+        cb(null, null);
+        
       });
     },
     
@@ -86,12 +86,12 @@ async.autoInject({
       k.stdin.end(`git clone --depth=5 --branch=master https://github.com/ORESoftware/typescript-library-skeleton.git ${name};\n`);
       k.once('exit', function (code) {
         if (code > 0) {
-          cb(new Error(`Could not clone project to directory ${proj}`), null);
+          return cb(new Error(`Could not clone project to directory ${proj}`), null);
         }
-        else {
-          log.info('Git clone succeeded.');
-          cb(null, null);
-        }
+        
+        log.info('Git clone succeeded.');
+        cb(null, null);
+        
       });
     },
     
@@ -104,12 +104,12 @@ async.autoInject({
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
-          cb(new Error(`The following command failed: 'git remote rm origin', for this repo: ${proj}`), null);
+          return cb(new Error(`The following command failed: 'git remote rm origin', for this repo: ${proj}`), null);
         }
-        else {
-          log.info('Successfully removed git remote.');
-          cb(null, null);
-        }
+        
+        log.info('Successfully removed git remote.');
+        cb(null, null);
+        
       });
     },
     
@@ -122,12 +122,12 @@ async.autoInject({
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
-          cb(new Error(`npm install failed for "${proj}".`), null);
+          return cb(new Error(`npm install failed for "${proj}".`), null);
         }
-        else {
-          log.info('NPM install succeeded.');
-          cb(null, null);
-        }
+        
+        log.info('NPM install succeeded.');
+        cb(null, null);
+        
       });
       
     },
@@ -145,7 +145,7 @@ async.autoInject({
       };
       
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`find . -type f -not -path '*/.git/*' | ${getXargsCommand()};\n`);
+      k.stdin.end(`find . -type f -not -path '**/.git/**' -not -path '**/node_modules/**' | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
@@ -171,16 +171,15 @@ async.autoInject({
       };
       
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`find . -type f -not -path '*/.git/*' | ${getXargsCommand()};\n`);
+      k.stdin.end(`find . -type f -not -path '**/node_modules/**' -not -path '**/.git/**' | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
-          cb(new Error(`sed/replace command failed for "${proj}".`), null);
+          return cb(new Error(`sed/replace command failed for "${proj}".`), null);
         }
-        else {
-          log.info('sed/replace org name command succeeded.');
-          cb(null, null);
-        }
+        
+        log.info('sed/replace org name command succeeded.');
+        cb(null, null);
       });
       
     },
@@ -192,12 +191,12 @@ async.autoInject({
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
-          cb(new Error(`chmod command failed for "${proj}".`), null);
+          return cb(new Error(`chmod command failed for "${proj}".`), null);
         }
-        else {
-          log.info('chmod command succeeded.');
-          cb(null, null);
-        }
+        
+        log.info('chmod command succeeded.');
+        cb(null, null);
+        
       });
     }
     
