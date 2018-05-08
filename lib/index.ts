@@ -22,7 +22,7 @@ const isYes = Boolean(opts.yes || false);
 const pth = String(opts.name || opts._args[0] || '').trim();
 
 if (!pth) {
-  throw new Error('No project name provided at command line.');
+  throw new Error(chalk.magenta('No project name provided at command line.'));
 }
 
 const proj = path.resolve(process.cwd() + '/' + pth);
@@ -30,7 +30,7 @@ const projRoot = path.dirname(proj);
 const name = path.basename(proj);
 
 if (!/^[.a-z0-9_-]+$/i.test(name)) {
-  throw new Error('Project name must be alphanumeric (hyphen, underscore and period, is OK too).');
+  throw new Error(chalk.magenta('Project name must be alphanumeric (hyphen, underscore and period, is OK too).'));
 }
 
 async.autoInject({
