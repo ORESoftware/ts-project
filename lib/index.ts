@@ -83,7 +83,7 @@ async.autoInject({
       
       log.info('Cloning repo.');
       const k = cp.spawn('bash', [], {cwd: projRoot});
-      k.stdin.end(`git clone --depth=5 --branch=master https://github.com/ORESoftware/typescript-library-skeleton.git ${name};\n`);
+      k.stdin.end(`git clone --depth=3 --branch=master https://github.com/ORESoftware/typescript-library-skeleton.git ${name};\n`);
       k.once('exit', function (code) {
         if (code > 0) {
           return cb(new Error(`Could not clone project to directory ${proj}`), null);
@@ -118,7 +118,7 @@ async.autoInject({
       log.info('Installing NPM deps...');
       
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end('npm install --silent;\n');
+      k.stdin.end('set -e; npm install --silent;\n');
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
@@ -145,16 +145,16 @@ async.autoInject({
       };
       
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`find . -type f -not -path '**/.git/**' -not -path '**/node_modules/**' | ${getXargsCommand()};\n`);
+      k.stdin.end(`set -e; find . -type f -not -path '**/.git/**' -not -path '**/node_modules/**' | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
-          cb(new Error(`sed/replace command failed for "${proj}".`), null);
+          return cb(new Error(`sed/replace command failed for "${proj}".`), null);
         }
-        else {
-          log.info('replace/sed command succeeded.');
-          cb(null, null);
-        }
+        
+        log.info('replace/sed command succeeded.');
+        cb(null, null);
+        
       });
       
     },
@@ -171,7 +171,7 @@ async.autoInject({
       };
       
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`find . -type f -not -path '**/node_modules/**' -not -path '**/.git/**' | ${getXargsCommand()};\n`);
+      k.stdin.end(`set -e; find . -type f -not -path '**/node_modules/**' -not -path '**/.git/**' | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
