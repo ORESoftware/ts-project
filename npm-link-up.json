@@ -8,9 +8,9 @@
     "/.git/"
   ],
   "comments": [
-
   ],
   "list": [
-    "clean-trace"
+    "clean-trace",
+    "@oresoftware/waldo"
   ]
 }

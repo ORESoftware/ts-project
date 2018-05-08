@@ -3,13 +3,13 @@
   "version": "0.0.104",
   "description": "Semver-oriented TypeScript library skeleton.",
   "bin": {
-    "tsproject": "dist/index.js",
-    "ts-project": "dist/index.js",
-    "ts_project": "dist/index.js"
+    "tsproject": "dist/cli.js",
+    "ts-project": "dist/cli.js",
+    "ts_project": "dist/cli.js"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "typings": "dist/index.d.ts",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "typings": "dist/main.d.ts",
   "scripts": {
     "test": "suman test"
   },
@@ -30,14 +30,17 @@
   },
   "homepage": "https://github.com/ORESoftware/ts-project#readme",
   "dependencies": {
+    "@oresoftware/waldo": "0.0.101",
     "async": "^2.6.0",
     "chalk": "^2.4.0",
-    "clean-trace": "0.0.101",
-    "dashdash": "^1.14.1"
+    "clean-trace": "0.0.103",
+    "dashdash": "^1.14.1",
+    "gmx": "0.0.107"
   },
   "devDependencies": {
     "@types/async": "^2.0.49",
     "@types/core-js": "^0.9.46",
-    "@types/node": "^9.6.2"
+    "@types/node": "^9.6.2",
+    "r2g": "0.0.103"
   }
 }

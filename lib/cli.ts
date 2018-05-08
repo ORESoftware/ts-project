@@ -6,6 +6,7 @@ import path = require('path');
 import cp = require('child_process');
 import readline = require('readline');
 import os = require('os');
+import fs = require('fs');
 
 //npm
 import async = require('async');
@@ -34,8 +35,6 @@ if (!/^[.a-z0-9_-]+$/i.test(name)) {
   throw new Error(chalk.magenta('Project name must be alphanumeric (hyphen, underscore and period, is OK too).'));
 }
 
-const findIgnore = ` -not -path '**/.git/objects/**' -not -path '**/.git/**' -not -path '**/node_modules/**' `;
-
 async.autoInject({
     
     confirm: function (cb: AsyncAutoTaskFunction<any, any, any>) {
@@ -45,22 +44,32 @@ async.autoInject({
         return process.nextTick(cb);
       }
       
-      log.info('Please confirm.');
-      
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-      });
-      
-      rl.question(`Do you wish to create your project here: "${proj}" ?  (y/n) ... `, (answer) => {
-        rl.close();
-        const y = String(answer).trim().toUpperCase();
-        if (['JEAH', 'YES', 'YASS', 'YEP', 'Y'].includes(y)) {
-          return cb(null, null);
+      fs.stat(proj, function (err) {
+        
+        if (!err) {
+          log.error('Something already exists at path:', proj);
+          log.error('Refusing to overwrite without --force.');
+          return process.exit(1);
         }
         
-        log.error('Next time you need to confirm with an affirmative.');
-        process.exit(1);
+        log.info('Please confirm.');
+        
+        const rl = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout
+        });
+        
+        rl.question(`Do you wish to create your project here: "${proj}" ?  (y/n) ... `, (answer) => {
+          rl.close();
+          const y = String(answer).trim().toUpperCase();
+          if (['JEAH', 'YES', 'YASS', 'YEP', 'Y'].includes(y)) {
+            return cb(null, null);
+          }
+          
+          log.error('Next time you need to confirm with an affirmative.');
+          process.exit(1);
+          
+        });
         
       });
       
@@ -103,7 +112,6 @@ async.autoInject({
       log.info('Removing git remote.');
       const k = cp.spawn('bash', [], {cwd: proj});
       k.stdin.end(`rm -rf .git;\n`);
-      // k.stdin.end(`git remote rm origin;\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
@@ -148,7 +156,7 @@ async.autoInject({
       };
       
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`set -e; find . -type f ${findIgnore} | ${getXargsCommand()};\n`);
+      k.stdin.end(`set -e; gmx waldo --not-match="/node_modules/" --not-match="/.git/" | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
@@ -174,7 +182,7 @@ async.autoInject({
       };
       
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`set -e; find . -type f ${findIgnore} | ${getXargsCommand()};\n`);
+      k.stdin.end(`set -e; gmx waldo --not-match="/node_modules/" --not-match="/.git/" | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
@@ -188,8 +196,8 @@ async.autoInject({
     },
     
     chmod: function (confirm: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+      
       const k = cp.spawn('bash', [], {cwd: proj});
-      // k.stdin.end('chmod u+x $(find scripts -name "*.sh");\n');
       k.stdin.end(`set -e; find scripts -name "*.sh" | xargs chmod u+x; \n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
