@@ -32,7 +32,7 @@
   "dependencies": {
     "@oresoftware/waldo": "latest",
     "async": "^2.6.0",
-    "chalk": "^2.4.0",
+    "chalk": "^2.4.1",
     "clean-trace": "latest",
     "dashdash": "^1.14.1",
     "gmx": "latest"
@@ -40,7 +40,7 @@
   "devDependencies": {
     "@types/async": "^2.0.49",
     "@types/core-js": "^0.9.46",
-    "@types/node": "^9.6.2",
+    "@types/node": "^9.6.14",
     "r2g": "latest"
   }
 }
