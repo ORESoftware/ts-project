@@ -35,7 +35,34 @@ if (!/^[.a-z0-9_-]+$/i.test(name)) {
   throw new Error(chalk.magenta('Project name must be alphanumeric (hyphen, underscore and period, is OK too).'));
 }
 
+const shared = {
+  packageExists: null as Boolean
+};
+
 async.autoInject({
+    
+    npmView: function (cb: AsyncAutoTaskFunction<any, any, any>) {
+      
+      log.info(`Running background process to check if NPM package with name '${name}' already exists...`);
+      
+      const k = cp.spawn('bash');
+      k.stdin.end(`npm view ${name};\n`);
+      
+      let stderr = '';
+      k.stderr.on('data', function (d) {
+        stderr += String(d);
+      });
+      
+      const r = /is not in the npm registry/;
+      k.once('exit', function (code) {
+        if (!r.test(stderr)) {
+          log.error(stderr);
+        }
+        
+        shared.packageExists = code === 0;
+        cb(null, code);
+      });
+    },
     
     confirm: function (cb: AsyncAutoTaskFunction<any, any, any>) {
       
@@ -48,7 +75,7 @@ async.autoInject({
         
         if (!err) {
           log.error('Something already exists at path:', proj);
-          log.error('Refusing to overwrite without --force.');
+          log.error('Refusing to overwrite.');
           return process.exit(1);
         }
         
@@ -59,12 +86,15 @@ async.autoInject({
           output: process.stdout
         });
         
-        const q = `Do you wish to create your project here: "${proj}" ?  (y/n) ... `;
+        const q = `Do you wish to create your project here: '${chalk.cyan(proj)}' ?  (y/n) ... `;
         
-        rl.question(chalk.yellow(q), (answer) => {
+        rl.question(chalk.blueBright.bold(q), (answer) => {
           rl.close();
           const y = String(answer).trim().toUpperCase();
           if (['JEAH', 'YES', 'YASS', 'YEP', 'Y'].includes(y)) {
+            if (shared.packageExists === null) {
+              log.info('Still checking to see if the NPM package name exists already...');
+            }
             return cb(null, null);
           }
           
@@ -77,44 +107,37 @@ async.autoInject({
       
     },
     
-    npmView: function (confirm: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    confirmAndnpmView: function (confirm: any, npmView: number, cb: AsyncAutoTaskFunction<any, any, any>) {
       
-      log.info(`Checking to see if NPM package with name '${name}' already exists.`);
+      if (npmView > 0) {
+        log.info(`Package with '${name}' does not appear to already exist on NPM.`);
+        return process.nextTick(cb);
+      }
       
-      const k = cp.spawn('bash');
-      k.stdin.end(`npm view ${name};\n`);
-      k.stderr.pipe(process.stderr);
-      k.once('exit', function (code) {
-        
-        if (code > 0) {
+      log.warn('Please respond to the following prompt:');
+      
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+      
+      const q = `It appears that the project name you may want ('${chalk.red(name)}') is already taken on NPM, continue anyway?  (y/n) ... `;
+      
+      rl.question(chalk.blueBright.bold(q), (answer) => {
+        rl.close();
+        const y = String(answer).trim().toUpperCase();
+        if (['JEAH', 'YES', 'YASS', 'YEP', 'Y'].includes(y)) {
           return cb(null, null);
         }
         
-        log.warn('Please respond to the following prompt:');
-        
-        const rl = readline.createInterface({
-          input: process.stdin,
-          output: process.stdout
-        });
-        
-        const q = `It appears that the project name you may want ('${name}') is already taken on NPM, continue anyway?  (y/n) ... `;
-        
-        rl.question(chalk.yellow(q), (answer) => {
-          rl.close();
-          const y = String(answer).trim().toUpperCase();
-          if (['JEAH', 'YES', 'YASS', 'YEP', 'Y'].includes(y)) {
-            return cb(null, null);
-          }
-          
-          log.error('Next time you need to confirm with an affirmative.');
-          process.exit(1);
-          
-        });
+        log.error('Next time you need to confirm with an affirmative.');
+        process.exit(1);
         
       });
+      
     },
     
-    mkdirp: function (confirm: any, npmView: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    mkdirp: function (confirmAndnpmView: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       log.info('Creating directory, with make derp.');
       const k = cp.spawn('bash');
       k.stdin.end(`mkdir -p ${projRoot};\n`);
@@ -130,7 +153,7 @@ async.autoInject({
       });
     },
     
-    clone: function (confirm: any, mkdirp: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    clone: function (confirmAndnpmView: any, mkdirp: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       log.info('Cloning repo.');
       const k = cp.spawn('bash', [], {cwd: projRoot});
@@ -146,7 +169,7 @@ async.autoInject({
       });
     },
     
-    removeGit: function (confirm: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    removeGit: function (confirmAndnpmView: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       log.info('Removing git remote.');
       const k = cp.spawn('bash', [], {cwd: proj});
@@ -163,7 +186,7 @@ async.autoInject({
       });
     },
     
-    install: function (confirm: any, replaceWithName: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    install: function (confirmAndnpmView: any, replaceWithName: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       log.info('Installing NPM deps...');
       
@@ -209,7 +232,7 @@ async.autoInject({
       
     },
     
-    replaceOrgName: function (confirm: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    replaceOrgName: function (confirmAndnpmView: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       // find . -type f | xargs sed -i s^<oldstring>^<newstring>^g
       log.info('Replacing org name with temp org name.');
@@ -234,7 +257,7 @@ async.autoInject({
       
     },
     
-    chmod: function (confirm: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    chmod: function (confirmAndnpmView: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       const k = cp.spawn('bash', [], {cwd: proj});
       k.stdin.end(`set -e; find scripts -name "*.sh" | xargs chmod u+x; \n`);
