@@ -52,14 +52,16 @@ async.autoInject({
           return process.exit(1);
         }
         
-        log.info('Please confirm.');
+        log.warn('Please respond to the following prompt:');
         
         const rl = readline.createInterface({
           input: process.stdin,
           output: process.stdout
         });
         
-        rl.question(`Do you wish to create your project here: "${proj}" ?  (y/n) ... `, (answer) => {
+        const q = `Do you wish to create your project here: "${proj}" ?  (y/n) ... `;
+        
+        rl.question(chalk.yellow(q), (answer) => {
           rl.close();
           const y = String(answer).trim().toUpperCase();
           if (['JEAH', 'YES', 'YASS', 'YEP', 'Y'].includes(y)) {
@@ -75,7 +77,44 @@ async.autoInject({
       
     },
     
-    mkdirp: function (confirm: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    npmView: function (confirm: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+      
+      log.info(`Checking to see if NPM package with name '${name}' already exists.`);
+      
+      const k = cp.spawn('bash');
+      k.stdin.end(`npm view ${name};\n`);
+      k.stderr.pipe(process.stderr);
+      k.once('exit', function (code) {
+        
+        if (code > 0) {
+          return cb(null, null);
+        }
+        
+        log.warn('Please respond to the following prompt:');
+        
+        const rl = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout
+        });
+        
+        const q = `It appears that the project name you may want ('${name}') is already taken on NPM, continue anyway?  (y/n) ... `;
+        
+        rl.question(chalk.yellow(q), (answer) => {
+          rl.close();
+          const y = String(answer).trim().toUpperCase();
+          if (['JEAH', 'YES', 'YASS', 'YEP', 'Y'].includes(y)) {
+            return cb(null, null);
+          }
+          
+          log.error('Next time you need to confirm with an affirmative.');
+          process.exit(1);
+          
+        });
+        
+      });
+    },
+    
+    mkdirp: function (confirm: any, npmView: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       log.info('Creating directory, with make derp.');
       const k = cp.spawn('bash');
       k.stdin.end(`mkdir -p ${projRoot};\n`);
