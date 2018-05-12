@@ -1,5 +1,6 @@
 language: node_js
 node_js:
+  - '10'
   - '9'
   - '8'
   - '7'
@@ -17,6 +18,10 @@ before_install: './scripts/travis/before_install.sh'
 install: './scripts/travis/install.sh'
 script: './scripts/travis/script.sh'
 after_script: './scripts/travis/after_script.sh'
+git:
+  depth: 1
 cache:
+  bundler: true
   directories:
+   - node_modules
    - /home/travis/.npm
