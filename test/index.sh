@@ -4,5 +4,5 @@ set -e;
 
 npm link;
 cd "$HOME";
-rm -rf "$HOME/xxx"
-ts_project xxx/yyy/zafooxxuuzz --yes
+rm -rf "$HOME/xxxxdc"
+ts_project xxxxdc/yyy/zafooxxuuzz --yes
