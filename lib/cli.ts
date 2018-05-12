@@ -60,7 +60,7 @@ async.autoInject({
         }
         
         shared.packageExists = code === 0;
-        cb(null, code);
+        cb(null, code as any);
       });
     },
     
