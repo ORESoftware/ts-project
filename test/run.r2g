@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+docker build -t ts-project .
+docker run -it --name ts-project ts-project
