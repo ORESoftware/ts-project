@@ -138,6 +138,7 @@ async.autoInject({
     },
     
     mkdirp: function (confirmAndnpmView: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+      
       log.info('Creating directory, with make derp.');
       const k = cp.spawn('bash');
       k.stdin.end(`mkdir -p ${projRoot};\n`);
@@ -186,7 +187,7 @@ async.autoInject({
       });
     },
     
-    install: function (confirmAndnpmView: any, replaceWithName: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    install: function (confirmAndnpmView: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       log.info('Installing NPM deps...');
       
@@ -205,7 +206,7 @@ async.autoInject({
       
     },
     
-    replaceWithName: function (replaceOrgName: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    replaceWithName: function (replaceOrgName: any, install: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       // find . -type f | xargs sed -i s^<oldstring>^<newstring>^g
       
@@ -232,7 +233,7 @@ async.autoInject({
       
     },
     
-    replaceOrgName: function (confirmAndnpmView: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    replaceOrgName: function (confirmAndnpmView: any, install: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       // find . -type f | xargs sed -i s^<oldstring>^<newstring>^g
       log.info('Replacing org name with temp org name.');
