@@ -18,15 +18,13 @@ jobs:
 
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
+      - restore_cache:  # Download and cache dependencies
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: npm install --loglevel=warn
+      - run: sudo npm install --loglevel=warn
 
       - save_cache:
           paths:
