@@ -18,6 +18,8 @@ jobs:
 
     steps:
       - checkout
+      - user node
+      -
       - restore_cache:  # Download and cache dependencies
           keys:
           - v1-dependencies-{{ checksum "package.json" }}

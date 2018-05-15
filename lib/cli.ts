@@ -219,7 +219,7 @@ async.autoInject({
       };
       
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`set -e; gmx waldo -n "/node_modules/" -n "/.git/" | ${getXargsCommand()};\n`);
+      k.stdin.end(`set -e; waldo -n "/node_modules/" -n "/.git/" | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
@@ -245,7 +245,7 @@ async.autoInject({
       };
       
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`set -e; gmx waldo -n "/node_modules/" -n "/.git/" | ${getXargsCommand()};\n`);
+      k.stdin.end(`set -e; waldo -n "/node_modules/" -n "/.git/" | ${getXargsCommand()};\n`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
