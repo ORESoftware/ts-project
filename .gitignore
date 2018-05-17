@@ -9,4 +9,5 @@ dist/*
 
 
 ### negation
-!dist/.gitkeeppackage-lock.json
+!dist/.gitkeep
+package-lock.json
