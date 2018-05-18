@@ -11,7 +11,8 @@
   "types": "dist/main.d.ts",
   "typings": "dist/main.d.ts",
   "scripts": {
-    "test": "suman test"
+    "test": "suman test",
+    "postinstall": "./assets/postinstall.sh"
   },
   "repository": {
     "type": "git",

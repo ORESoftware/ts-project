@@ -209,7 +209,7 @@ async.autoInject({
     replaceWithName: function (replaceOrgName: any, install: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       // find . -type f | xargs sed -i s^<oldstring>^<newstring>^g
-      
+      return process.nextTick(cb);
       log.info('Replacing temp library name with your library name.');
       
       const getXargsCommand = function () {
@@ -236,6 +236,9 @@ async.autoInject({
     replaceOrgName: function (confirmAndnpmView: any, install: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
       
       // find . -type f | xargs sed -i s^<oldstring>^<newstring>^g
+      
+      return process.nextTick(cb);
+      
       log.info('Replacing org name with temp org name.');
       
       const getXargsCommand = function () {
