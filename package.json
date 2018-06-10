@@ -3,9 +3,9 @@
   "version": "0.0.105",
   "description": "Semver-oriented TypeScript library skeleton.",
   "bin": {
-    "tsproject": "dist/cli.js",
-    "ts-project": "dist/cli.js",
-    "ts_project": "dist/cli.js"
+    "tsproject": "assets/cli.sh",
+    "ts-project": "assets/cli.sh",
+    "ts_project": "assets/cli.sh"
   },
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
