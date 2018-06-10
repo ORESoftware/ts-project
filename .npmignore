@@ -6,10 +6,13 @@ test
 .idea
 .vscode
 lib
+.circleci
+.docker.r2g
 
 ### files
 .gitignore
 .npmignore
+.dockerignore
 
 ### matching
 *.tgz
