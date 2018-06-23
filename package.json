@@ -1,6 +1,6 @@
 {
   "name": "@oresoftware/ts-project",
-  "version": "0.0.105",
+  "version": "0.0.106",
   "description": "Semver-oriented TypeScript library skeleton.",
   "bin": {
     "tsproject": "assets/cli.sh",
