@@ -14,8 +14,11 @@ ts-project(){
 
 
 ts_project(){
+
     if ! type -f ts_project &> /dev/null || ! which ts_project &> /dev/null; then
          npm i -g -s '@oresoftware/ts-project' || {
+           echo "Could not install '@oresoftware/ts-project' globally.";
+           echo "Please check your permissions to install global NPM packages.";
            return 1;
          }
     fi
