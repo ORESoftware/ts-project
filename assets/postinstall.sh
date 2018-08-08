@@ -17,14 +17,13 @@ if ! which gmx; then
 fi
 
 
-
 mkdir -p "$HOME/.oresoftware/bash" || {
   echo "Could not create oresoftware/bash dir."
   exit 1;
 }
 
 
-cat assets/shell.sh > "$HOME/.oresoftware/bash/ts_project.sh" || {
+cat "assets/shell.sh" > "$HOME/.oresoftware/bash/ts_project.sh" || {
   echo "Could not create oresoftware/bash/ts_project.sh file."
   exit 1;
 }

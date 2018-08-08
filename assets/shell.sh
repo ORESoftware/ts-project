@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
 get_latest_ts_project(){
-  . "$HOME/.oresoftware/bash/"
+  . "$HOME/.oresoftware/bash/ts_project.sh"
 }
 
 tsproject(){
-  ts_project $@
+  ts_project "$@"
 }
 
 ts-project(){
-  ts_project $@
+  ts_project "$@"
 }
 
 
@@ -20,7 +20,7 @@ ts_project(){
          }
     fi
 
-    command ts_project $@;
+    command ts_project "$@";
 }
 
 
