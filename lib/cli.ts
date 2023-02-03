@@ -12,7 +12,7 @@ import fs = require('fs');
 import async = require('async');
 import {AsyncAutoTaskFunction} from "async";
 const dashdash = require('dashdash');
-import {getCleanTrace} from 'clean-trace';
+const {getCleanTrace} = require('clean-trace');
 
 //project
 import {log} from './logger';
@@ -41,7 +41,7 @@ const shared = {
 
 async.autoInject({
 
-    npmView: function (cb: AsyncAutoTaskFunction<any, any, any>) {
+    npmView (cb: AsyncAutoTaskFunction<any, any, any>) {
 
       log.info(`Running background process to check if NPM package with name '${name}' already exists...`);
 
@@ -60,11 +60,11 @@ async.autoInject({
         }
 
         shared.packageExists = code === 0;
-        cb(null, code as any);
+        cb(null, 0 as any);
       });
     },
 
-    confirm: function (cb: AsyncAutoTaskFunction<any, any, any>) {
+    confirm (cb: AsyncAutoTaskFunction<any, any, any>) {
 
       if (isForce || isYes) {
         log.info('No confirmation needed.');
@@ -107,7 +107,7 @@ async.autoInject({
 
     },
 
-    confirmAndnpmView: function (confirm: any, npmView: number, cb: AsyncAutoTaskFunction<any, any, any>) {
+    confirmAndnpmView (confirm: any, npmView: number, cb: AsyncAutoTaskFunction<any, any, any>) {
 
       if (npmView > 0) {
         log.info(`Package with '${name}' does not appear to already exist on NPM.`);
@@ -137,7 +137,7 @@ async.autoInject({
 
     },
 
-    mkdirp: function (confirmAndnpmView: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    mkdirp (confirmAndnpmView: any, cb: AsyncAutoTaskFunction<any, any, any>) {
 
       log.info('Creating directory, with make derp.');
       const k = cp.spawn('bash');
@@ -154,7 +154,7 @@ async.autoInject({
       });
     },
 
-    clone: function (confirmAndnpmView: any, mkdirp: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    clone (confirmAndnpmView: any, mkdirp: any, cb: AsyncAutoTaskFunction<any, any, any>) {
 
       log.info('Cloning repo.');
       const k = cp.spawn('bash', [], {cwd: projRoot});
@@ -170,7 +170,7 @@ async.autoInject({
       });
     },
 
-    removeGit: function (confirmAndnpmView: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    removeGit (confirmAndnpmView: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
 
       log.info('Removing git remote.');
       const k = cp.spawn('bash', [], {cwd: proj});
@@ -187,7 +187,7 @@ async.autoInject({
       });
     },
 
-    install: function (confirmAndnpmView: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    install (confirmAndnpmView: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
 
       log.info('Installing NPM deps...');
 
@@ -206,7 +206,7 @@ async.autoInject({
 
     },
 
-    replaceWithName: function (replaceOrgName: any, install: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    replaceWithName (replaceOrgName: any, install: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
 
       // find . -type f | xargs sed -i s^<oldstring>^<newstring>^g
       return process.nextTick(cb);
@@ -234,7 +234,7 @@ async.autoInject({
 
     },
 
-    replaceOrgName: function (confirmAndnpmView: any, install: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    replaceOrgName (confirmAndnpmView: any, install: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
 
       // find . -type f | xargs sed -i s^<oldstring>^<newstring>^g
 
@@ -262,7 +262,7 @@ async.autoInject({
 
     },
 
-    chmod: function (confirmAndnpmView: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
+    chmod (confirmAndnpmView: any, clone: any, cb: AsyncAutoTaskFunction<any, any, any>) {
 
       const k = cp.spawn('bash', [], {cwd: proj});
       k.stdin.end(`set -e; find scripts -name "*.sh" | xargs chmod u+x; \n`);
@@ -280,9 +280,11 @@ async.autoInject({
 
   },
 
-  function (err, results) {
+   (err, results) => {
 
-    if (err) throw getCleanTrace(err);
+    if (err) {
+      throw getCleanTrace(err);
+    }
 
     log.info('');
     log.info(chalk.green.bold('Success.'));

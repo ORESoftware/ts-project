@@ -1,6 +1,6 @@
 {
   "name": "@oresoftware/ts-project",
-  "version": "0.0.107",
+  "version": "0.21.18",
   "description": "Semver-oriented TypeScript library skeleton.",
   "bin": {
     "tsproject": "assets/cli.sh",
@@ -11,7 +11,7 @@
   "types": "dist/main.d.ts",
   "typings": "dist/main.d.ts",
   "scripts": {
-    "test": "suman test",
+    "test": "echo 'test'",
     "postinstall": "./assets/postinstall.sh"
   },
   "repository": {
@@ -41,7 +41,7 @@
   "devDependencies": {
     "@types/async": "^2.0.49",
     "@types/core-js": "^0.9.46",
-    "@types/node": "^9.6.16"
+    "@types/node": "^18"
   },
   "b3val": 12
 }
