@@ -2,18 +2,21 @@
   "compilerOptions": {
     "outDir": "dist",
     "skipLibCheck": true,
-    "declaration": true,
+    "declaration": false,
     "baseUrl": ".",
     "target": "es6",
     "module": "commonjs",
     "noImplicitAny": true,
     "removeComments": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
     "allowUnreachableCode": true,
     "lib": [
-      "es2017",
-      "es2018",
       "es2019",
-      "es2020"
+      "es2020",
+      "es2021"
     ]
   },
   "compileOnSave": false,
