@@ -41,7 +41,7 @@
   "devDependencies": {
     "@types/async": "^2.0.49",
     "@types/core-js": "^0.9.46",
-    "@types/node": "^18"
+    "@types/node": "^20"
   },
   "b3val": 12
 }

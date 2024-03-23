@@ -46,11 +46,11 @@ async.autoInject({
       log.info(`Running background process to check if NPM package with name '${name}' already exists...`);
 
       const k = cp.spawn('bash');
-      k.stdin.end(`npm view ${name};\n`);
+      k.stdin.end(`npm view ${name};`);
 
       let stderr = '';
       k.stderr.on('data', function (d) {
-        stderr += String(d);
+        stderr += String(d || '');
       });
 
       const r = /is not in the npm registry/;
@@ -90,7 +90,7 @@ async.autoInject({
 
         rl.question(chalk.blueBright.bold(q), (answer) => {
           rl.close();
-          const y = String(answer).trim().toUpperCase();
+          const y = String(answer || '').trim().toUpperCase();
           if (['JEAH', 'YES', 'YASS', 'YEP', 'Y'].includes(y)) {
             if (shared.packageExists === null) {
               log.info('Still checking to see if the NPM package name exists already...');
@@ -158,10 +158,10 @@ async.autoInject({
 
       log.info('Cloning repo.');
       const k = cp.spawn('bash', [], {cwd: projRoot});
-      k.stdin.end(`git clone --depth=3 --branch=master https://github.com/ORESoftware/typescript-library-skeleton.git ${name};\n`);
+      k.stdin.end(`git clone --depth=3 --branch=master https://github.com/ORESoftware/typescript-library-skeleton.git '${name}';\n`);
       k.once('exit', function (code) {
         if (code > 0) {
-          return cb(new Error(`Could not clone project to directory ${proj}`), null);
+          return cb(new Error(`Could not clone project to directory '${proj}'`), null);
         }
 
         log.info('Git clone succeeded.');
@@ -174,11 +174,11 @@ async.autoInject({
 
       log.info('Removing git remote.');
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end(`rm -rf .git;\n`);
+      k.stdin.end(`rm -rf .git;`);
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
-          return cb(new Error(`The following command failed: 'git remote rm origin', for this repo: ${proj}`), null);
+          return cb(new Error(`The following command failed: 'git remote rm origin', for this repo: '${proj}'`), null);
         }
 
         log.info('Successfully removed git remote.');
@@ -192,7 +192,7 @@ async.autoInject({
       log.info('Installing NPM deps...');
 
       const k = cp.spawn('bash', [], {cwd: proj});
-      k.stdin.end('set -e; npm install --silent;\n');
+      k.stdin.end('set -e; npm install --silent;');
       k.stderr.pipe(process.stderr);
       k.once('exit', function (code) {
         if (code > 0) {
