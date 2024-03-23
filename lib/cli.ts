@@ -44,14 +44,17 @@ async.autoInject({
     npmView (cb: AsyncAutoTaskFunction<any, any, any>) {
 
       log.info(`Running background process to check if NPM package with name '${name}' already exists...`);
-
+      
       const k = cp.spawn('bash');
-      k.stdin.end(`npm view ${name};`);
+      k.stdin.end(`(npm view '${name}' &> /dev/null) &> /dev/null;`);
 
       let stderr = '';
       k.stderr.on('data', function (d) {
         stderr += String(d || '');
       });
+      
+      k.stdout.pipe(fs.createWriteStream('/dev/null'));
+      k.stderr.pipe(fs.createWriteStream('/dev/null'))
 
       const r = /is not in the npm registry/;
       k.once('exit', function (code) {
@@ -109,7 +112,7 @@ async.autoInject({
 
     confirmAndnpmView (confirm: any, npmView: number, cb: AsyncAutoTaskFunction<any, any, any>) {
 
-      if (npmView > 0) {
+      if (!shared.packageExists) {
         log.info(`Package with '${name}' does not appear to already exist on NPM.`);
         return process.nextTick(cb);
       }
