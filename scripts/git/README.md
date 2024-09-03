@@ -1,3 +1,2 @@
 
-
-# Put common / reusable git scripts into this folder.
+## Put common / reusable git scripts into this folder.
